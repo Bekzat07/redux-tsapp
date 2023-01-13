@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
 
+import { text } from 'node:stream/consumers';
+import React, { useEffect } from 'react';
+import { RootState, useAppDispatch, useAppSelector } from './store';
+import { removeTodo, fetchTodos} from './store/counterSlice';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+const dispatch = useAppDispatch()
+const {status,error} = useAppSelector((state:RootState)=> state.posts)
+const text= useAppSelector((state:RootState)=> state.posts.posts)
+console.log(text)
+useEffect(()=>{
+  dispatch(fetchTodos())
+},[dispatch])
+  return(
+   <div className='App'>
+    <p>sdfsd</p>
+   {status === "Loading" &&  <h1>...Loading</h1>} 
+    {error && <h1>{error}</h1>}
+  <ul>
+     {text.map((todo)=><li key={todo.id}>
+      <span>{todo.title}</span>
+      <span onClick={()=>dispatch(removeTodo(todo.id))}>&times;</span>
+    </li>)}
+
+  </ul>
     </div>
   );
 }
